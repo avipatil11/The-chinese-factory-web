@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Chinese Factory (Since 2019) | Authentic Indo-Chinese in Kolhapur</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cinzel for heritage headlines & Plus Jakarta Sans for clean UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for crisp culinary & UI icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            charcoal: '#121010',
+                            surface: '#1C1817',
+                            card: '#241E1D',
+                            crimson: '#B91C1C',
+                            darkRed: '#7F1D1D',
+                            gold: '#F59E0B',
+                            amberLight: '#FCD34D',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom subtle scrollbar & decorative touches */
+        body {
+            background-color: #121010;
+            color: #F5F5F4;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FCD34D 0%, #F59E0B 50%, #D97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-pattern {
+            background-image: radial-gradient(circle at 20% 50%, rgba(185, 28, 28, 0.25) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.15) 0%, transparent 45%);
+        }
+        /* Custom animations */
+        @keyframes pulseSlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-slow {
+            animation: pulseSlow 3s infinite;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-brand-crimson selection:text-white overflow-x-hidden">
+
+    <!-- Toast Notification Banner (Replaces alert()) -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Sticky Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-brand-charcoal/95 backdrop-blur-md border-b border-amber-500/20 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand Logo & Since 2019 Badge -->
+                <a href="#home" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-red-700 to-red-950 border border-amber-400/50 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-fire-flame-curved text-amber-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-display font-bold text-lg sm:text-xl tracking-wide text-white">THE CHINESE FACTORY</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span>
+                            <span class="text-xs font-semibold uppercase tracking-widest text-amber-400">Since 2019 • Kolhapur</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-sm font-medium text-stone-300 hover:text-amber-400 transition-colors">Home</a>
+                    <a href="#signatures" class="text-sm font-medium text-stone-300 hover:text-amber-400 transition-colors">Food Gallery</a>
+                    <a href="#menu" class="text-sm font-medium text-stone-300 hover:text-amber-400 transition-colors">Full Menu</a>
+                    <a href="#about" class="text-sm font-medium text-stone-300 hover:text-amber-400 transition-colors">Our Story</a>
+                    <a href="#location" class="text-sm font-medium text-stone-300 hover:text-amber-400 transition-colors">Location</a>
+                </nav>
+
+                <!-- Action Buttons (Cart + Mobile Menu Toggle) -->
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleCartDrawer()" class="relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white text-sm font-semibold border border-amber-400/30 shadow-md transition-all active:scale-95">
+                        <i class="fa-solid fa-bag-shopping text-amber-300"></i>
+                        <span class="hidden sm:inline">Order Summary</span>
+                        <span id="cart-badge" class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold rounded-full bg-amber-400 text-stone-950">0</span>
+                    </button>
+
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl bg-brand-surface text-stone-200 hover:text-amber-400 border border-stone-800" aria-label="Toggle Menu">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-surface border-b border-stone-800 px-4 pt-2 pb-5 space-y-2">
+            <a href="#home" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-xl text-base font-medium text-stone-200 hover:bg-stone-800 hover:text-amber-400">Home</a>
+            <a href="#signatures" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-xl text-base font-medium text-stone-200 hover:bg-stone-800 hover:text-amber-400">Food Gallery</a>
+            <a href="#menu" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-xl text-base font-medium text-stone-200 hover:bg-stone-800 hover:text-amber-400">Full Menu</a>
+            <a href="#about" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-xl text-base font-medium text-stone-200 hover:bg-stone-800 hover:text-amber-400">Our Story (Since 2019)</a>
+            <a href="#location" onclick="toggleMobileMenu()" class="block px-4 py-2.5 rounded-xl text-base font-medium text-stone-200 hover:bg-stone-800 hover:text-amber-400">Location & Address</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative hero-pattern pt-12 pb-20 lg:pt-20 lg:pb-28 border-b border-stone-800/80 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Text Column -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-950/80 border border-amber-500/40 text-amber-300 text-xs sm:text-sm font-semibold tracking-wide shadow-sm">
+                        <i class="fa-solid fa-award text-amber-400"></i>
+                        <span>ESTABLISHED IN KOLHAPUR • SINCE 2019</span>
+                    </div>
+
+                    <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-white">
+                        Sizzling Wok Flavors, <span class="gold-gradient-text block sm:inline">Crafted Since 2019.</span>
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-stone-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Welcome to <strong class="text-white">The Chinese Factory</strong> — Kolhapur’s beloved destination near Rankala Lake for fiery Schezwan specials, crispy Manchurian, hand-folded Momos, and steaming bowls of Hakka Noodles.
+                    </p>
+
+                    <!-- Quick Location Pill -->
+                    <div class="flex items-center justify-center lg:justify-start gap-2 text-xs sm:text-sm text-stone-400">
+                        <i class="fa-solid fa-location-dot text-red-500"></i>
+                        <span>Near Rankala Lake, Above ICICI Bank, Sambhaji Nagar, Kolhapur</span>
+                    </div>
+
+                    <!-- Primary CTAs -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#menu" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-bold text-base shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-utensils"></i>
+                            <span>Explore Full Menu</span>
+                        </a>
+                        <a href="#location" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-surface hover:bg-stone-800 text-white font-semibold text-base border border-stone-700 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-map-location-dot text-amber-400"></i>
+                            <span>Find Us & Address</span>
+                        </a>
+                    </div>
+
+                    <!-- Trust Metrics -->
+                    <div class="grid grid-cols-3 gap-4 pt-6 border-t border-stone-800/80 max-w-lg mx-auto lg:mx-0">
+                        <div>
+                            <p class="font-display text-2xl sm:text-3xl font-bold text-amber-400">2019</p>
+                            <p class="text-xs text-stone-400 uppercase tracking-wider">Serving Since</p>
+                        </div>
+                        <div>
+                            <p class="font-display text-2xl sm:text-3xl font-bold text-white">50+</p>
+                            <p class="text-xs text-stone-400 uppercase tracking-wider">Wok Dishes</p>
+                        </div>
+                        <div>
+                            <p class="font-display text-2xl sm:text-3xl font-bold text-red-500">100%</p>
+                            <p class="text-xs text-stone-400 uppercase tracking-wider">Freshly Tossed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Showcase Visual -->
+                <div class="lg:col-span-5 relative">
+                    <div class="relative rounded-3xl overflow-hidden border-2 border-amber-500/30 shadow-2xl bg-brand-card aspect-[4/3] sm:aspect-square">
+                        <img 
+                            src="https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=900&q=80" 
+                            alt="Sizzling Hakka Noodles and Indo-Chinese Platter at The Chinese Factory"
+                            onerror="this.onerror=null;this.src='https://placehold.co/800x800/241E1D/F59E0B?text=The+Chinese+Factory+Since+2019';"
+                            class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+                        
+                        <!-- Floating Dish Highlight Card -->
+                        <div class="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-brand-charcoal/90 backdrop-blur-md border border-amber-500/30 flex items-center justify-between">
+                            <div>
+                                <span class="text-[11px] font-bold uppercase tracking-widest text-amber-400">House Favorite</span>
+                                <h3 class="text-white font-bold text-base sm:text-lg">Triple Schezwan Wok Special</h3>
+                                <p class="text-xs text-stone-400">Noodles, Crispy Noodles & Spicy Gravy</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="block text-amber-400 font-bold text-lg">₹190</span>
+                                <button onclick="quickAddByName('Triple Schezwan Fried Rice')" class="mt-1 px-3 py-1 rounded-lg bg-red-700 hover:bg-red-600 text-white text-xs font-semibold transition-colors">
+                                    + Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SIGNATURE FOOD GALLERY SECTION -->
+    <section id="signatures" class="py-16 sm:py-24 bg-brand-surface border-b border-stone-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Taste The Wok Magic</span>
+                <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-2">Signature Dishes Gallery</h2>
+                <p class="text-stone-400 mt-3 text-sm sm:text-base">
+                    From smoky street-style Hakka Noodles to crispy golden Honey Chilli Potatoes, explore the dishes Kolhapur has loved since 2019.
+                </p>
+            </div>
+
+            <!-- 6-Card Visual Food Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                
+                <!-- Card 1: Hakka Noodles -->
+                <div class="group rounded-2xl bg-brand-card border border-stone-800 hover:border-amber-500/40 overflow-hidden shadow-lg transition-all flex flex-col">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=700&q=80" 
+                             alt="Veg & Chicken Hakka Noodles"
+                             onerror="this.onerror=null;this.src='https://placehold.co/700x500/241E1D/F59E0B?text=Hakka+Noodles';"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-sm text-amber-400 text-xs font-bold border border-amber-500/30">
+                            <i class="fa-solid fa-fire mr-1"></i> Bestseller
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2">
+                                <h3 class="text-lg font-bold text-white">Classic Hakka Noodles</h3>
+                                <span class="text-amber-400 font-bold">₹140</span>
+                            </div>
+                            <p class="text-stone-400 text-sm mt-2">High-flame wok-tossed noodles with julienned bell peppers, cabbage, spring onions, and aromatic soy.</p>
+                        </div>
+                        <button onclick="quickAddByName('Veg Hakka Noodles')" class="mt-4 w-full py-2.5 rounded-xl bg-stone-800 hover:bg-red-700 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus text-xs"></i> Add to Order
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Veg / Chicken Manchurian -->
+                <div class="group rounded-2xl bg-brand-card border border-stone-800 hover:border-amber-500/40 overflow-hidden shadow-lg transition-all flex flex-col">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=700&q=80" 
+                             alt="Crispy Manchurian Dry & Gravy"
+                             onerror="this.onerror=null;this.src='https://placehold.co/700x500/241E1D/F59E0B?text=Crispy+Manchurian';"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-red-800/90 text-white text-xs font-bold">
+                            Factory Classic
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2">
+                                <h3 class="text-lg font-bold text-white">Crispy Veg Manchurian</h3>
+                                <span class="text-amber-400 font-bold">₹130</span>
+                            </div>
+                            <p class="text-stone-400 text-sm mt-2">Golden fried vegetable dumplings tossed in a rich ginger-garlic, coriander, and dark soy glaze.</p>
+                        </div>
+                        <button onclick="quickAddByName('Veg Manchurian Dry')" class="mt-4 w-full py-2.5 rounded-xl bg-stone-800 hover:bg-red-700 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus text-xs"></i> Add to Order
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Steamed & Fried Momos -->
+                <div class="group rounded-2xl bg-brand-card border border-stone-800 hover:border-amber-500/40 overflow-hidden shadow-lg transition-all flex flex-col">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=700&q=80" 
+                             alt="Steamed and Pan-Fried Momos"
+                             onerror="this.onerror=null;this.src='https://placehold.co/700x500/241E1D/F59E0B?text=Signature+Momos';"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-sm text-amber-400 text-xs font-bold border border-amber-500/30">
+                            Must Try
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2">
+                                <h3 class="text-lg font-bold text-white">Schezwan Pan-Fried Momos</h3>
+                                <span class="text-amber-400 font-bold">₹120</span>
+                            </div>
+                            <p class="text-stone-400 text-sm mt-2">Juicy hand-folded dumplings pan-seared and tossed in our house-made fiery Kolhapuri-style Schezwan sauce.</p>
+                        </div>
+                        <button onclick="quickAddByName('Schezwan Pan-Fried Momos (8 Pcs)')" class="mt-4 w-full py-2.5 rounded-xl bg-stone-800 hover:bg-red-700 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus text-xs"></i> Add to Order
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 4: Schezwan Fried Rice -->
+                <div class="group rounded-2xl bg-brand-card border border-stone-800 hover:border-amber-500/40 overflow-hidden shadow-lg transition-all flex flex-col">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=700&q=80" 
+                             alt="Spicy Schezwan Fried Rice"
+                             onerror="this.onerror=null;this.src='https://placehold.co/700x500/241E1D/F59E0B?text=Schezwan+Fried+Rice';"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-red-800/90 text-white text-xs font-bold">
+                            <i class="fa-solid fa-pepper-hot mr-1"></i> Spicy Kick
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2">
+                                <h3 class="text-lg font-bold text-white">Chicken Schezwan Fried Rice</h3>
+                                <span class="text-amber-400 font-bold">₹170</span>
+                            </div>
+                            <p class="text-stone-400 text-sm mt-2">Long-grain aromatic rice stir-fried with tender chicken chunks, egg, burnt garlic, and red chilli paste.</p>
+                        </div>
+                        <button onclick="quickAddByName('Chicken Schezwan Fried Rice')" class="mt-4 w-full py-2.5 rounded-xl bg-stone-800 hover:bg-red-700 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus text-xs"></i> Add to Order
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 5: Honey Chilli Potato -->
+                <div class="group rounded-2xl bg-brand-card border border-stone-800 hover:border-amber-500/40 overflow-hidden shadow-lg transition-all flex flex-col">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=700&q=80" 
+                             alt="Crispy Honey Chilli Potato"
+                             onerror="this.onerror=null;this.src='https://placehold.co/700x500/241E1D/F59E0B?text=Honey+Chilli+Potato';"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-sm text-amber-400 text-xs font-bold border border-amber-500/30">
+                            Sweet & Spicy
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2">
+                                <h3 class="text-lg font-bold text-white">Crispy Honey Chilli Potato</h3>
+                                <span class="text-amber-400 font-bold">₹150</span>
+                            </div>
+                            <p class="text-stone-400 text-sm mt-2">Double-fried crisp potato fingers glazed with golden honey, chilli flakes, and toasted white sesame seeds.</p>
+                        </div>
+                        <button onclick="quickAddByName('Crispy Honey Chilli Potato')" class="mt-4 w-full py-2.5 rounded-xl bg-stone-800 hover:bg-red-700 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus text-xs"></i> Add to Order
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 6: Hot Manchow Soup -->
+                <div class="group rounded-2xl bg-brand-card border border-stone-800 hover:border-amber-500/40 overflow-hidden shadow-lg transition-all flex flex-col">
+                    <div class="relative h-56 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=700&q=80" 
+                             alt="Hot & Spicy Manchow Soup"
+                             onerror="this.onerror=null;this.src='https://placehold.co/700x500/241E1D/F59E0B?text=Manchow+Soup';"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-sm text-amber-400 text-xs font-bold border border-amber-500/30">
+                            Rankala Evening Special
+                        </span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2">
+                                <h3 class="text-lg font-bold text-white">Hot Manchow Soup</h3>
+                                <span class="text-amber-400 font-bold">₹110</span>
+                            </div>
+                            <p class="text-stone-400 text-sm mt-2">Dark, flavorful vegetable or chicken broth infused with ginger, garlic, and topped with crunchy fried noodles.</p>
+                        </div>
+                        <button onclick="quickAddByName('Veg Manchow Soup')" class="mt-4 w-full py-2.5 rounded-xl bg-stone-800 hover:bg-red-700 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-plus text-xs"></i> Add to Order
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE MENU SECTION -->
+    <section id="menu" class="py-16 sm:py-24 bg-brand-charcoal border-b border-stone-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Freshly Prepared To Order</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-2">The Chinese Factory Menu</h2>
+                </div>
+
+                <!-- Dietary Filter (All / Veg / Non-Veg) -->
+                <div class="inline-flex p-1.5 rounded-xl bg-brand-surface border border-stone-800 self-start">
+                    <button onclick="setDietFilter('all')" id="diet-all" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-amber-500 text-stone-950 transition-all">
+                        All Items
+                    </button>
+                    <button onclick="setDietFilter('veg')" id="diet-veg" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-stone-300 hover:text-white transition-all flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-sm border border-emerald-500 flex items-center justify-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span></span>
+                        Pure Veg
+                    </button>
+                    <button onclick="setDietFilter('nonveg')" id="diet-nonveg" class="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-stone-300 hover:text-white transition-all flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-sm border border-red-500 flex items-center justify-center"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span></span>
+                        Non-Veg
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar" id="category-tabs">
+                <button onclick="setCategoryFilter('All')" class="cat-btn active shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold bg-red-700 text-white border border-red-500/40 transition-all">All Dishes</button>
+                <button onclick="setCategoryFilter('Starters & Momos')" class="cat-btn shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold bg-brand-surface text-stone-300 hover:text-white border border-stone-800 transition-all">Starters & Momos</button>
+                <button onclick="setCategoryFilter('Soups')" class="cat-btn shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold bg-brand-surface text-stone-300 hover:text-white border border-stone-800 transition-all">Soups</button>
+                <button onclick="setCategoryFilter('Noodles')" class="cat-btn shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold bg-brand-surface text-stone-300 hover:text-white border border-stone-800 transition-all">Noodles</button>
+                <button onclick="setCategoryFilter('Fried Rice')" class="cat-btn shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold bg-brand-surface text-stone-300 hover:text-white border border-stone-800 transition-all">Fried Rice</button>
+                <button onclick="setCategoryFilter('Gravy & Combos')" class="cat-btn shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold bg-brand-surface text-stone-300 hover:text-white border border-stone-800 transition-all">Gravy & Combos</button>
+            </div>
+
+            <!-- Dynamic Menu Items Grid -->
+            <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Rendered via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT & HERITAGE (SINCE 2019) -->
+    <section id="about" class="py-16 sm:py-24 bg-brand-surface border-b border-stone-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6">
+                    <div class="relative rounded-3xl overflow-hidden border border-stone-700 shadow-xl">
+                        <img 
+                            src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=80" 
+                            alt="Inside The Chinese Factory Kitchen and Dining"
+                            onerror="this.onerror=null;this.src='https://placehold.co/800x600/241E1D/F59E0B?text=Serving+Kolhapur+Since+2019';"
+                            class="w-full h-80 sm:h-96 object-cover"
+                        >
+                        <div class="absolute bottom-4 left-4 bg-brand-charcoal/90 backdrop-blur-md px-5 py-3 rounded-2xl border border-amber-500/40">
+                            <p class="font-display text-amber-400 font-bold text-lg">Est. 2019</p>
+                            <p class="text-xs text-stone-300">Proudly serving Sambhaji Nagar & Rankala</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 space-y-6">
+                    <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Our Culinary Journey</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-white leading-snug">
+                        A Kolhapur Favorite Built on Fire, Flavor & Generosity
+                    </h2>
+                    <p class="text-stone-300 leading-relaxed">
+                        Founded in <strong class="text-amber-400">2019</strong> right near the scenic Rankala Lake in Sambhaji Nagar, <strong>The Chinese Factory</strong> started with a simple mission: to serve bold, hygienic, and piping-hot Indo-Chinese food that matches Kolhapur’s love for rich spices and generous portions.
+                    </p>
+                    <p class="text-stone-400 leading-relaxed">
+                        Whether you are stopping by after an evening stroll at Rankala Lake or ordering a family feast at home, every dish is cooked to order in high-heat seasoned woks using farm-fresh vegetables, tender meats, and our signature house-blended sauces.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div class="p-4 rounded-2xl bg-brand-card border border-stone-800 flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-red-950 text-amber-400 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-fire"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Authentic Wok Hei</h4>
+                                <p class="text-xs text-stone-400 mt-1">High-flame tossing for true smoky aroma.</p>
+                            </div>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-brand-card border border-stone-800 flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-red-950 text-amber-400 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-bowl-food"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Generous Portions</h4>
+                                <p class="text-xs text-stone-400 mt-1">Hearty servings ideal for friends & family.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOCATION, ADDRESS & CONTACT SECTION -->
+    <section id="location" class="py-16 sm:py-24 bg-brand-charcoal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-xs font-bold uppercase tracking-widest text-amber-400">Visit Us Today</span>
+                <h2 class="font-display text-3xl sm:text-4xl font-bold text-white mt-2">Location & Hours</h2>
+                <p class="text-stone-400 mt-2">Located right above ICICI Bank near Rankala Lake, Sambhaji Nagar, Kolhapur.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                
+                <!-- Exact Address Card -->
+                <div class="lg:col-span-6 rounded-3xl bg-brand-surface border border-amber-500/30 p-6 sm:p-8 flex flex-col justify-between shadow-xl">
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-red-900/60 border border-amber-500/40 flex items-center justify-center text-amber-400 text-xl">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-display text-xl font-bold text-white">The Chinese Factory (Since 2019)</h3>
+                                <span class="text-xs text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Open Today • 12:00 PM – 11:00 PM
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Full Exact Address Box -->
+                        <div class="p-5 rounded-2xl bg-brand-charcoal border border-stone-800 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Official Restaurant Address</span>
+                                <span class="text-xs font-mono text-stone-400 bg-stone-900 px-2 py-0.5 rounded">Plus Code: M6J6+4JX</span>
+                            </div>
+                            <p id="full-address-text" class="text-stone-200 text-sm sm:text-base leading-relaxed font-medium">
+                                M6J6+4JX The Chinese Factory (Since 2019), Seon Appt Main Road, Chouk, near Ranakala Lake, above Icic Bank Crasher, Rajlaxmi Nagar, Sambhaji Nagar, Kolhapur, Maharashtra 416011
+                            </p>
+                        </div>
+
+                        <!-- Landmarks & Timings -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                            <div class="p-4 rounded-2xl bg-brand-card border border-stone-800/80">
+                                <p class="text-stone-400 text-xs uppercase font-semibold">Key Landmarks</p>
+                                <p class="text-white font-medium mt-1">Near Rankala Lake & Above ICICI Bank, Sambhaji Nagar</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-brand-card border border-stone-800/80">
+                                <p class="text-stone-400 text-xs uppercase font-semibold">Opening Hours</p>
+                                <p class="text-white font-medium mt-1">Mon – Sun: 12:00 PM to 11:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons: Copy Address & Open Google Maps -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6 mt-6 border-t border-stone-800">
+                        <button onclick="copyAddress()" class="px-5 py-3.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 border border-stone-700">
+                            <i class="fa-regular fa-copy text-amber-400"></i>
+                            <span>Copy Full Address</span>
+                        </button>
+                        <a href="https://www.google.com/maps/search/?api=1&query=M6J6%2B4JX+The+Chinese+Factory+Sambhaji+Nagar+Kolhapur+416011" target="_blank" rel="noopener noreferrer" class="px-5 py-3.5 rounded-xl bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg">
+                            <i class="fa-solid fa-diamond-turn-right text-amber-300"></i>
+                            <span>Open in Google Maps</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Interactive Visual Map / Kolhapur Landmark Card -->
+                <div class="lg:col-span-6 rounded-3xl overflow-hidden border border-stone-800 bg-brand-surface relative min-h-[340px] flex flex-col justify-between">
+                    <iframe 
+                        title="Map showing The Chinese Factory near Rankala Lake, Sambhaji Nagar, Kolhapur"
+                        class="w-full h-full min-h-[360px] grayscale contrast-125 opacity-90"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=74.2050%2C16.6780%2C74.2220%2C16.6900&amp;layer=mapnik&amp;marker=16.6828%2C74.2116">
+                    </iframe>
+                    <div class="bg-brand-charcoal/95 backdrop-blur-md p-4 border-t border-stone-800 flex items-center justify-between gap-4">
+                        <div class="text-xs sm:text-sm">
+                            <span class="text-amber-400 font-bold">Rajlaxmi Nagar, Sambhaji Nagar</span>
+                            <span class="text-stone-400 block sm:inline sm:ml-2">Kolhapur, Maharashtra 416011</span>
+                        </div>
+                        <a href="https://www.google.com/maps/search/?api=1&query=M6J6%2B4JX+The+Chinese+Factory+Kolhapur" target="_blank" rel="noopener noreferrer" class="shrink-0 text-xs font-bold text-amber-400 hover:underline">
+                            Directions <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-stone-900 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div>
+                <div class="flex items-center justify-center md:justify-start gap-2">
+                    <i class="fa-solid fa-fire-flame-curved text-amber-400"></i>
+                    <span class="font-display font-bold text-white text-lg">THE CHINESE FACTORY</span>
+                    <span class="text-xs px-2 py-0.5 rounded bg-red-950 text-amber-400 border border-amber-500/30 font-semibold">Since 2019</span>
+                </div>
+                <p class="text-xs text-stone-500 mt-2 max-w-xl">
+                    M6J6+4JX The Chinese Factory (Since 2019), Seon Appt Main Road, Chouk, near Ranakala Lake, above Icic Bank Crasher, Rajlaxmi Nagar, Sambhaji Nagar, Kolhapur, Maharashtra 416011
+                </p>
+            </div>
+
+            <div class="text-xs text-stone-500">
+                <p>&copy; <span id="year"></span> The Chinese Factory Kolhapur. All rights reserved.</p>
+                <p class="mt-1 text-stone-600">Crafted with fresh ingredients & fiery woks.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SLIDE-OVER ORDER SUMMARY DRAWER -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div onclick="toggleCartDrawer()" class="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity"></div>
+        
+        <!-- Drawer Panel -->
+        <div class="fixed inset-y-0 right-0 max-w-md w-full bg-brand-surface border-l border-stone-800 shadow-2xl flex flex-col z-10">
+            <div class="p-5 border-b border-stone-800 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-bag-shopping text-amber-400 text-lg"></i>
+                    <h3 class="font-display font-bold text-lg text-white">Your Order Summary</h3>
+                </div>
+                <button onclick="toggleCartDrawer()" class="p-2 rounded-lg text-stone-400 hover:text-white hover:bg-stone-800">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items List -->
+            <div id="cart-items-container" class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Populated dynamically -->
+            </div>
+
+            <!-- Cart Footer -->
+            <div class="p-5 border-t border-stone-800 bg-brand-charcoal space-y-4">
+                <div class="flex items-center justify-between text-sm text-stone-400">
+                    <span>Estimated Subtotal</span>
+                    <span id="cart-subtotal" class="text-xl font-bold text-amber-400">₹0</span>
+                </div>
+                <p class="text-[11px] text-stone-500">
+                    Copy your selected dishes list to share at the counter or order via phone/takeaway at our Sambhaji Nagar outlet.
+                </p>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="clearCart()" class="py-3 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs sm:text-sm font-semibold transition-colors">
+                        Clear List
+                    </button>
+                    <button onclick="copyOrderSummary()" class="py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2">
+                        <i class="fa-regular fa-copy"></i> Copy Order List
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // Menu Dataset for The Chinese Factory (Since 2019)
+        const menuItems = [
+            // Starters & Momos
+            { id: 1, name: "Veg Manchurian Dry", category: "Starters & Momos", diet: "veg", price: 130, spice: "Medium", desc: "Crispy mixed vegetable balls tossed in classic ginger-garlic soy sauce." },
+            { id: 2, name: "Crispy Honey Chilli Potato", category: "Starters & Momos", diet: "veg", price: 150, spice: "Sweet & Spicy", desc: "Golden potato fingers coated in honey, chilli flakes & toasted sesame." },
+            { id: 3, name: "Paneer Chilli Dry", category: "Starters & Momos", diet: "veg", price: 180, spice: "Spicy", desc: "Soft cottage cheese cubes stir-fried with diced capsicum, onions & green chillies." },
+            { id: 4, name: "Veg Spring Rolls (6 Pcs)", category: "Starters & Momos", diet: "veg", price: 130, spice: "Mild", desc: "Crunchy golden rolls stuffed with seasoned stir-fried veggies, served with Schezwan dip." },
+            { id: 5, name: "Schezwan Pan-Fried Momos (8 Pcs)", category: "Starters & Momos", diet: "veg", price: 120, spice: "Spicy", desc: "Steamed veg dumplings seared in our signature Kolhapur-style Schezwan sauce." },
+            { id: 6, name: "Chicken Chilli Dry", category: "Starters & Momos", diet: "nonveg", price: 190, spice: "Spicy", desc: "Tender boneless chicken tossed with fresh green chillies, garlic, and dark soy." },
+            { id: 7, name: "Chicken Lollipop (6 Pcs)", category: "Starters & Momos", diet: "nonveg", price: 200, spice: "Medium", desc: "Crispy frenched chicken winglets served sizzling with fiery Schezwan chutney." },
+            { id: 8, name: "Chicken Steamed Momos (8 Pcs)", category: "Starters & Momos", diet: "nonveg", price: 130, spice: "Medium", desc: "Delicate steamed dumplings filled with juicy minced chicken & spring onions." },
+
+            // Soups
+            { id: 9, name: "Veg Manchow Soup", category: "Soups", diet: "veg", price: 110, spice: "Medium", desc: "Hearty dark soy & garlic broth topped with crispy fried noodles." },
+            { id: 10, name: "Veg Hot & Sour Soup", category: "Soups", diet: "veg", price: 110, spice: "Spicy", desc: "Tangy and peppery vegetable soup loaded with mushrooms and bamboo shoots." },
+            { id: 11, name: "Chicken Manchow Soup", category: "Soups", diet: "nonveg", price: 130, spice: "Medium", desc: "Rich chicken broth infused with ginger, garlic, coriander & crispy noodles." },
+
+            // Noodles
+            { id: 12, name: "Veg Hakka Noodles", category: "Noodles", diet: "veg", price: 140, spice: "Mild", desc: "Street-style wok-tossed noodles with crunchy julienned vegetables." },
+            { id: 13, name: "Veg Schezwan Noodles", category: "Noodles", diet: "veg", price: 150, spice: "Spicy", desc: "Fiery noodles tossed in house-made red chilli Schezwan sauce." },
+            { id: 14, name: "Chicken Hakka Noodles", category: "Noodles", diet: "nonveg", price: 160, spice: "Mild", desc: "Smoky noodles tossed with shredded chicken, egg, and crisp bell peppers." },
+            { id: 15, name: "Chicken Schezwan Noodles", category: "Noodles", diet: "nonveg", price: 175, spice: "Spicy", desc: "Bold & spicy noodles loaded with tender chicken and aromatic garlic." },
+
+            // Fried Rice
+            { id: 16, name: "Veg Fried Rice", category: "Fried Rice", diet: "veg", price: 135, spice: "Mild", desc: "Aromatic long-grain rice stir-fried with finely diced carrots, beans & spring onions." },
+            { id: 17, name: "Triple Schezwan Fried Rice", category: "Fried Rice", diet: "veg", price: 190, spice: "Spicy", desc: "House Special: Combination of Schezwan rice, hakka noodles, crispy noodles & gravy." },
+            { id: 18, name: "Chicken Schezwan Fried Rice", category: "Fried Rice", diet: "nonveg", price: 170, spice: "Spicy", desc: "Wok-tossed rice with juicy chicken pieces, egg, and spicy Schezwan paste." },
+            { id: 19, name: "Chicken Triple Schezwan Rice", category: "Fried Rice", diet: "nonveg", price: 220, spice: "Spicy", desc: "Our bestselling feast platter with chicken rice, noodles, and rich Manchurian gravy." },
+
+            // Gravy & Combos
+            { id: 20, name: "Veg Manchurian Gravy", category: "Gravy & Combos", diet: "veg", price: 150, spice: "Medium", desc: "Soft vegetable dumplings simmered in thick, flavorful garlic-soy gravy." },
+            { id: 21, name: "Paneer in Hot Garlic Sauce", category: "Gravy & Combos", diet: "veg", price: 190, spice: "Spicy", desc: "Cottage cheese cubes cooked in a pungent roasted garlic and chilli gravy." },
+            { id: 22, name: "Chicken Manchurian Gravy", category: "Gravy & Combos", diet: "nonveg", price: 195, spice: "Medium", desc: "Succulent chicken meatballs in a savory Indo-Chinese brown gravy." }
+        ];
+
+        // State
+        let currentCategory = "All";
+        let currentDiet = "all";
+        let cart = {}; // { itemId: quantity }
+
+        // Initialize Page
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("year").textContent = new Date().getFullYear();
+            renderMenu();
+            renderCart();
+        });
+
+        // Toast Message System (No alert())
+        function showToast(message, iconClass = "fa-circle-check text-amber-400") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.className = "pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl bg-brand-card border border-amber-500/40 text-white text-sm font-medium shadow-2xl transform transition-all duration-300 translate-y-2 opacity-0";
+            toast.innerHTML = `<i class="fa-solid ${iconClass}"></i><span>${message}</span>`;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove("translate-y-2", "opacity-0");
+            });
+
+            setTimeout(() => {
+                toast.classList.add("opacity-0", "translate-y-2");
+                setTimeout(() => toast.remove(), 300);
+            }, 2800);
+        }
+
+        // Mobile Navigation Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById("mobile-menu");
+            menu.classList.toggle("hidden");
+        }
+
+        // Filter Handlers
+        function setCategoryFilter(category) {
+            currentCategory = category;
+            document.querySelectorAll(".cat-btn").forEach(btn => {
+                if (btn.textContent.trim().startsWith(category === "All" ? "All" : category)) {
+                    btn.className = "cat-btn active shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold bg-red-700 text-white border border-red-500/40 transition-all";
+                } else {
+                    btn.className = "cat-btn shrink-0 px-5 py-2.5 rounded-xl text-sm font-semibold bg-brand-surface text-stone-300 hover:text-white border border-stone-800 transition-all";
+                }
+            });
+            renderMenu();
+        }
+
+        function setDietFilter(diet) {
+            currentDiet = diet;
+            const btns = {
+                all: document.getElementById("diet-all"),
+                veg: document.getElementById("diet-veg"),
+                nonveg: document.getElementById("diet-nonveg")
+            };
+
+            Object.keys(btns).forEach(key => {
+                if (key === diet) {
+                    btns[key].className = "px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold bg-amber-500 text-stone-950 transition-all flex items-center gap-1.5";
+                } else {
+                    btns[key].className = "px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-stone-300 hover:text-white transition-all flex items-center gap-1.5";
+                }
+            });
+            renderMenu();
+        }
+
+        // Render Menu Cards
+        function renderMenu() {
+            const grid = document.getElementById("menu-grid");
+            const filtered = menuItems.filter(item => {
+                const matchCat = currentCategory === "All" || item.category === currentCategory;
+                const matchDiet = currentDiet === "all" || item.diet === currentDiet;
+                return matchCat && matchDiet;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-stone-400">No dishes match this filter combination.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(item => {
+                const isVeg = item.diet === "veg";
+                const qty = cart[item.id] || 0;
+                return `
+                    <div class="p-5 rounded-2xl bg-brand-surface border border-stone-800/90 hover:border-amber-500/40 transition-all flex items-start justify-between gap-4">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <!-- Veg / Non-Veg Symbol -->
+                                <span class="w-4 h-4 rounded-sm border ${isVeg ? 'border-emerald-500' : 'border-red-500'} flex items-center justify-center shrink-0" title="${isVeg ? 'Vegetarian' : 'Non-Vegetarian'}">
+                                    <span class="w-2 h-2 rounded-full ${isVeg ? 'bg-emerald-500' : 'bg-red-500'}"></span>
+                                </span>
+                                <h3 class="font-bold text-white text-base sm:text-lg">${item.name}</h3>
+                                <span class="text-[11px] px-2 py-0.5 rounded-md bg-stone-800 text-stone-300 font-medium">${item.spice}</span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-stone-400 leading-relaxed">${item.desc}</p>
+                            <p class="text-xs text-stone-500 pt-0.5">${item.category}</p>
+                        </div>
+
+                        <div class="flex flex-col items-end justify-between shrink-0 gap-3">
+                            <span class="font-bold text-amber-400 text-lg">₹${item.price}</span>
+                            ${qty === 0 ? `
+                                <button onclick="updateCart(${item.id}, 1)" class="px-4 py-2 rounded-xl bg-stone-800 hover:bg-red-700 text-white text-xs font-bold border border-stone-700 transition-colors">
+                                    + Add
+                                </button>
+                            ` : `
+                                <div class="inline-flex items-center rounded-xl bg-red-800 border border-amber-500/40 overflow-hidden">
+                                    <button onclick="updateCart(${item.id}, -1)" class="px-2.5 py-1.5 text-white hover:bg-red-700 font-bold text-xs">-</button>
+                                    <span class="px-2.5 py-1.5 text-white font-bold text-xs">${qty}</span>
+                                    <button onclick="updateCart(${item.id}, 1)" class="px-2.5 py-1.5 text-white hover:bg-red-700 font-bold text-xs">+</button>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        // Cart / Quick Order Summary Logic
+        function updateCart(itemId, delta) {
+            const current = cart[itemId] || 0;
+            const next = current + delta;
+            if (next <= 0) {
+                delete cart[itemId];
+            } else {
+                cart[itemId] = next;
+                if (delta > 0) {
+                    const item = menuItems.find(m => m.id === itemId);
+                    if (item) showToast(`Added ${item.name} to your list`);
+                }
+            }
+            renderMenu();
+            renderCart();
+        }
+
+        function quickAddByName(dishName) {
+            const found = menuItems.find(m => m.name.toLowerCase().includes(dishName.toLowerCase()));
+            if (found) {
+                updateCart(found.id, 1);
+            }
+        }
+
+        function clearCart() {
+            cart = {};
+            renderMenu();
+            renderCart();
+            showToast("Order list cleared", "fa-trash-can text-stone-300");
+        }
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById("cart-drawer");
+            drawer.classList.toggle("hidden");
+        }
+
+        function renderCart() {
+            const container = document.getElementById("cart-items-container");
+            const badge = document.getElementById("cart-badge");
+            const subtotalEl = document.getElementById("cart-subtotal");
+
+            const entries = Object.entries(cart);
+            let totalCount = 0;
+            let totalAmount = 0;
+
+            if (entries.length === 0) {
+                badge.textContent = "0";
+                subtotalEl.textContent = "₹0";
+                container.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center py-12 px-4">
+                        <div class="w-16 h-16 rounded-full bg-stone-800/80 flex items-center justify-center text-stone-500 text-2xl mb-4">
+                            <i class="fa-solid fa-bowl-rice"></i>
+                        </div>
+                        <p class="text-white font-semibold">Your order list is empty</p>
+                        <p class="text-xs text-stone-400 mt-1">Select delicious dishes from our menu to build your takeaway or table order summary.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = entries.map(([idStr, qty]) => {
+                const item = menuItems.find(m => m.id === Number(idStr));
+                if (!item) return "";
+                totalCount += qty;
+                totalAmount += item.price * qty;
+
+                return `
+                    <div class="p-3.5 rounded-2xl bg-brand-card border border-stone-800 flex items-center justify-between gap-3">
+                        <div>
+                            <h4 class="text-sm font-bold text-white">${item.name}</h4>
+                            <p class="text-xs text-amber-400 font-semibold mt-0.5">₹${item.price} × ${qty} = ₹${item.price * qty}</p>
+                        </div>
+                        <div class="inline-flex items-center rounded-lg bg-stone-900 border border-stone-700">
+                            <button onclick="updateCart(${item.id}, -1)" class="px-2.5 py-1 text-stone-300 hover:text-white font-bold">-</button>
+                            <span class="px-2 text-xs font-bold text-white">${qty}</span>
+                            <button onclick="updateCart(${item.id}, 1)" class="px-2.5 py-1 text-stone-300 hover:text-white font-bold">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            badge.textContent = totalCount;
+            subtotalEl.textContent = `₹${totalAmount}`;
+        }
+
+        // Copy Helpers using document.execCommand('copy') for universal compatibility
+        function copyTextFallback(text, successMsg) {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand("copy");
+                showToast(successMsg);
+            } catch (err) {
+                showToast("Could not copy automatically", "fa-circle-exclamation text-red-400");
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function copyAddress() {
+            const addr = document.getElementById("full-address-text").textContent.trim();
+            copyTextFallback(addr, "Kolhapur outlet address copied to clipboard!");
+        }
+
+        function copyOrderSummary() {
+            const entries = Object.entries(cart);
+            if (entries.length === 0) {
+                showToast("Add items to your order first!", "fa-circle-exclamation text-amber-400");
+                return;
+            }
+            let total = 0;
+            const lines = ["Order for The Chinese Factory (Since 2019) - Kolhapur:"];
+            entries.forEach(([idStr, qty]) => {
+                const item = menuItems.find(m => m.id === Number(idStr));
+                if (item) {
+                    const lineTotal = item.price * qty;
+                    total += lineTotal;
+                    lines.push(`• ${item.name} x${qty} (₹${lineTotal})`);
+                }
+            });
+            lines.push(`Estimated Total: ₹${total}`);
+            copyTextFallback(lines.join("\n"), "Order summary copied! Ready to paste & share.");
+        }
+    </script>
+</body>
+</html>
